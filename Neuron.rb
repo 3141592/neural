@@ -1,14 +1,17 @@
 # 
 # A single artificial neuron.
 #
+require 'yaml'
 require 'pry'
 
 class Neuron
-  attr_accessor :vector_size, :transfer_parameter
+  attr_accessor :name, :data, :training_data, :vector_size, :transfer_parameter
 
   def initialize(data)
     @vector_size = data[:vector_size]
-    @input_array = []
+    @name = data[:name]
+    @data = data[:data]
+    @training_data = data[:training_data]    
 
     random_weights
     @transfer_parameter = transfer_parameter
@@ -16,7 +19,7 @@ class Neuron
 
   def add_input(vector)
     if vector.size == @vector_size
-      @input_array << vector 
+      @input_vector = Vector.elements(vector) 
     else
       throw "InvalidVectorSizeException"
     end
@@ -38,22 +41,44 @@ class Neuron
   #
   # METHODS
   #
-  def add_input_vector(input_array)
-    @input_array << Vector.elements(input_array)
+  def add_input_vector(input_vector)
+    @input_vector = Vector.elements(input_vector)
+  end
+
+  def train
+    # Loop through training file
+
+    # Calculate output using current weights
+
+    # Adjust the weights if necessary
+
   end
 
   def transfer
-    activation = 0
-    @input_array.each do |vector|
-      value = vector.inner_product(@weight_vector)
-      activation = activation + value
-    end
-    activation
+    value = @input_vector.inner_product(@weight_vector)
+  rescue => ex
+    puts ex.message
+    binding.pry
+    return 0
   end
 
   def sigmoid
-    
-    return 
+      value = @input_vector.inner_product(@weight_vector)
+      activation = 1 / (1 + Math.exp(-value))
+  rescue => ex
+    puts ex.message
+    binding.pry
+    return 0
+  end
+
+  def save
+    @input_vector = []
+    if !@name.nil?
+      $file = Time.now.strftime('%Y-%m-%d-%H-%M-%S-') << @name
+    else
+      $file = Time.now.strftime('%Y-%m-%d-%H-%M-%S-') << self.object_id.to_s
+    end
+    File.open("store/#{$file}", 'w') { |f| f.write(YAML.dump(self)) }
   end
 
 end

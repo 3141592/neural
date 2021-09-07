@@ -17,7 +17,14 @@ require 'net/http'
 # Example
 # https://image-charts.com/chart?chs=700x190&chd=t:60,40&cht=p3&chl=Hello%7CWorld&chan&chf=ps0-0,lg,45,ffeb3b,0.2,f44336,1|ps0-1,lg,45,8bc34a,0.2,009688,1
 # 
+
+def get_filename
+  $file = "images/" << Time.now.strftime('%Y-%m-%d-%H-%M-%S-') << "image.jpg"
+end
+
 def create_graph_lxy(xvalues, yvalues)
+  get_filename
+
   cht = "lxy"
   chd = "t:"
 
@@ -41,12 +48,14 @@ def create_graph_lxy(xvalues, yvalues)
 
   uri = URI(request_url)
   res = Net::HTTP.get_response(uri)
-  File.write("image.jpg", res.body) if res.is_a?(Net::HTTPSuccess)
+  File.write($file , res.body) if res.is_a?(Net::HTTPSuccess)
 
 end
 
 def create_graph_lx(yvalues)
-  cht = "lx"
+  get_filename
+
+  cht = "lc"
   chd = "t:"
 
   # y values
@@ -63,6 +72,6 @@ def create_graph_lx(yvalues)
 
   uri = URI(request_url)
   res = Net::HTTP.get_response(uri)
-  File.write("image.jpg", res.body) if res.is_a?(Net::HTTPSuccess)
+  File.write($file, res.body) if res.is_a?(Net::HTTPSuccess)
 
 end
