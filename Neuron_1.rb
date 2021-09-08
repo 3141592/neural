@@ -5,14 +5,7 @@ require 'yaml'
 require 'pry'
 
 class Neuron
-  attr_accessor :name, 
-                :data, 
-                :dirname, 
-                :training_data, 
-                :input_array,
-                :target_array, 
-                :vector_size, 
-                :transfer_parameter
+  attr_accessor :name, :data, :dirname, :training_data, :input_array, :vector_size, :transfer_parameter
 
   def initialize(data)
     @vector_size = data[:vector_size]
@@ -20,7 +13,6 @@ class Neuron
     @data = data[:data]
     @training_data = data[:training_data]
     @input_array = []
-    @target_array = []
     
     @dirname = File.dirname(__FILE__)
     
@@ -29,14 +21,20 @@ class Neuron
     
     file.each do |row|
       row.gsub!("\n","")
-      temp_array = row.split(",")
-      temp_array.map!(&:to_f)
-      @input_array << (temp_array.first temp_array.size - 1)
-      @target_array << temp_array.last
+      @input
+      binding.pry
     end
 
     random_weights
     @transfer_parameter = transfer_parameter
+  end
+
+  def add_input(vector)
+    if vector.size == @vector_size
+      @input_vector = Vector.elements(vector) 
+    else
+      throw "InvalidVectorSizeException"
+    end
   end
 
   def weight_vector
@@ -55,6 +53,10 @@ class Neuron
   #
   # METHODS
   #
+  def add_input_vector(input_vector)
+    @input_vector = Vector.elements(input_vector)
+  end
+
   def train
     # Loop through training data
     file = File.open("#{dirname}/data/#{@training_data}")
