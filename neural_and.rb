@@ -9,17 +9,18 @@ def main
 
   function = "sigmoid" if function.nil?
 
-  # read test data
-  file = File.open("data/and.data")
-
   neuron1 = Neuron.new(
     name: "And",
-    vector_size: 4,
-    training_data: "and.data",
     transfer_parameter: 1 
   )
- 
-  neuron1.train
+
+  dataFile = File.read("data/and.data") 
+  
+  File.open('data/and.data').each do |line|
+    data = line.gsub("\n","").split(",")
+    data.map!(&:to_f)
+    neuron1.train(data)
+  end
  
   puts neuron1.weight_vector
   neuron1.save

@@ -6,37 +6,18 @@ require 'pry'
 
 class Neuron
   attr_accessor :name, 
-                :data, 
-                :dirname, 
-                :training_data, 
-                :input_array,
-                :target_array, 
+                :training_vector, 
+                :target, 
                 :vector_size, 
                 :transfer_parameter
 
   def initialize(data)
     @vector_size = data[:vector_size]
     @name = data[:name]
-    @data = data[:data]
-    @training_data = data[:training_data]
-    @input_array = []
-    @target_array = []
-    
-    @dirname = File.dirname(__FILE__)
-    
-    # Loop through training data
-    file = File.open("#{dirname}/data/#{@training_data}")
-    
-    file.each do |row|
-      row.gsub!("\n","")
-      temp_array = row.split(",")
-      temp_array.map!(&:to_f)
-      @input_array << (temp_array.first temp_array.size - 1)
-      @target_array << temp_array.last
-    end
-
-    random_weights
     @transfer_parameter = transfer_parameter
+    
+    # Assign random weights
+    #random_weights
   end
 
   def weight_vector
@@ -55,20 +36,45 @@ class Neuron
   #
   # METHODS
   #
-  def train
-    # Loop through training data
-    file = File.open("#{dirname}/data/#{@training_data}")
+  def train(data)
+    # Turn data into Vector
+    data_array = data.first(data.size - 1)
+    input = data_array.first(data_array.size - 1)
     
-    file.each do |row|
-      row.gsub!("\n","")
-      @input
-      binding.pry
+    @target = data_array.last
+    @training_vector = Vector.elements(input)
+
+    # Get @weight_vector size
+    if @weight_vector.nil?
+      @vector_size = @training_vector.size
+      random_weights
     end
 
     # Calculate output using current weights
+    value = @training_vector.inner_product(@weight_vector)
 
     # Adjust the weights if necessary
+    while @target != value
+      adjust_weight(@training_vector, @target, value)
+      value = @training_vector.inner_product(@weight_vector)
+    end
+  end
 
+  def adjust_weight(training, target, value)
+    if value > target
+      training.each do |element|
+        if element > 0
+          binding.pry
+          #@weight_vector = @target_vector * 
+        end
+      end
+    else
+      training.each do |element|
+        if element > 0
+
+        end
+      end
+    end 
   end
 
   def transfer
