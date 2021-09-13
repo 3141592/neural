@@ -7,15 +7,20 @@ require 'pry'
 class Neuron
   attr_accessor :name, 
                 :training_vector, 
+                :weight_vector,
                 :target, 
                 :vector_size, 
-                :transfer_parameter
+                :transfer_parameter,
+                :iterations,
+                :values,
+                :output
 
   def initialize(data)
     @vector_size = data[:vector_size]
     @name = data[:name]
     @transfer_parameter = transfer_parameter
-    
+    @values = []    
+
     # Assign random weights
     #random_weights
   end
@@ -39,11 +44,13 @@ class Neuron
   def train(data)
     # Turn data into Vector
     data_array = data.first(data.size - 1)
-    input = data_array.first(data_array.size - 1)
     
-    @target = data_array.last
-    @training_vector = Vector.elements(input)
+    @target = data.last
 
+    # Add threshhold element
+    data_array << -1.0
+    @training_vector = Vector.elements(data_array)
+    
     # Get @weight_vector size
     if @weight_vector.nil?
       @vector_size = @training_vector.size
@@ -51,30 +58,67 @@ class Neuron
     end
 
     # Calculate output using current weights
-    value = @training_vector.inner_product(@weight_vector)
+    rawvalue = @training_vector.inner_product(@weight_vector)
+    value = 0 if rawvalue < 0
+    value = 1 if rawvalue >= 0
 
     # Adjust the weights if necessary
-    while @target != value
-      adjust_weight(@training_vector, @target, value)
-      value = @training_vector.inner_product(@weight_vector)
+    puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}, #{rawvalue}"
+    while (@target - value).abs() != 0
+      puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}, #{rawvalue}"
+      @weight_vector =  adjust_weight(@training_vector, @weight_vector, @target, value)
+      rawvalue = inner_product(@training_vector, @weight_vector)
+
+      value = 0 if rawvalue < 0
+      value = 1 if rawvalue >= 0
+
+      sleep 1
+      @values << value
     end
+    @output = value
   end
 
-  def adjust_weight(training, target, value)
-    if value > target
-      training.each do |element|
-        if element > 0
-          binding.pry
-          #@weight_vector = @target_vector * 
+  def inner_product(first, second)
+    value = 0.0
+    first.each_with_index do |element, index|
+      value = value + (element * second[index])
+    end
+    return value
+  end
+
+  def adjust_weight(training, weight, target, value)
+    if value != target
+      training.each_with_index do |element, index|
+        if element >= 0 
+          weight[index] = weight[index] - 0.1
         end
       end
     else
-      training.each do |element|
-        if element > 0
-
+      training.each_with_index do |element, index|
+        if element < 0
+          weight[index] = weight[index] + 0.1
         end
       end
     end 
+    return weight
+  end
+
+  def test(data)
+    # Turn data into Vector
+    data_array = data.first(data.size - 1)
+    
+    @target = data.last
+    
+    # Add threshhold element
+    data_array << -1.0
+    @training_vector = Vector.elements(data_array)
+    
+    # Calculate output using current weights
+    value = @training_vector.inner_product(@weight_vector)
+
+    # Adjust the weights if necessary
+    puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}"
+
   end
 
   def transfer
@@ -96,6 +140,7 @@ class Neuron
 
   def save
     @input_vector = []
+    @values = []
     if !@name.nil?
       $file = Time.now.strftime('%Y-%m-%d-%H-%M-%S-') << @name
     else

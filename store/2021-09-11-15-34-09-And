@@ -1,0 +1,18 @@
+--- !ruby/object:Neuron
+vector_size: 3
+name: And
+transfer_parameter: 
+values: []
+target: 1.0
+training_vector: !ruby/object:Vector
+  elements:
+  - 1.0
+  - 1.0
+  - 1.0
+weight_vector: !ruby/object:Vector
+  elements:
+  - 0.5142294555306396
+  - 0.49490203951029077
+  - 0.00029377781322724705
+output: 1.0094252728541577
+input_vector: []
