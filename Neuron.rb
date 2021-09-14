@@ -63,6 +63,7 @@ class Neuron
     value = 1 if rawvalue >= 0
 
     # Adjust the weights if necessary
+    puts "{@training_vector}, {@weight_vector}, {@target}, {value}, {rawvalue}"
     puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}, #{rawvalue}"
     while (@target - value).abs() != 0
       puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}, #{rawvalue}"
@@ -87,15 +88,19 @@ class Neuron
   end
 
   def adjust_weight(training, weight, target, value)
-    if value != target
+    if value > target
       training.each_with_index do |element, index|
-        if element >= 0 
+        if element >= 0 && index == (training.size - 1)
+          weight[index] = weight[index] + 0.1
+        else
           weight[index] = weight[index] - 0.1
         end
       end
     else
       training.each_with_index do |element, index|
-        if element < 0
+        if element >= 0 && index == (training.size - 1)
+          weight[index] = weight[index] - 0.1
+        else 
           weight[index] = weight[index] + 0.1
         end
       end
@@ -114,7 +119,9 @@ class Neuron
     @training_vector = Vector.elements(data_array)
     
     # Calculate output using current weights
-    value = @training_vector.inner_product(@weight_vector)
+    rawvalue = @training_vector.inner_product(@weight_vector)
+    value = 0 if rawvalue < 0
+    value = 1 if rawvalue >= 0
 
     # Adjust the weights if necessary
     puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}"

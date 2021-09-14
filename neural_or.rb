@@ -10,21 +10,21 @@ def main
   function = "sigmoid" if function.nil?
 
   neuron1 = Neuron.new(
-    name: "And",
+    name: "Or",
     transfer_parameter: 1 
   )
 
   dataFile = File.read("data/and.data") 
   values = []
  
-  File.open('data/and.data').each do |line|
+  File.open('data/or.data').each do |line|
     data = line.gsub("\n","").split(",")
     data.map!(&:to_f)
 
     # To Test
     test = true
     if test
-        weight_array = [0.40903175365587763, 0.25346103501725536, 0.5818914448261708]
+        weight_array = [0.5280792893951307, 0.2578971742250856, 0.17185775067809468]
         weight_vector = Vector.elements(weight_array)
         neuron1.weight_vector = weight_vector
         neuron1.test(data)
