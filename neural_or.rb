@@ -5,7 +5,8 @@ require 'pry'
 
 def main  
 
-  function = ARGV[0]
+  test = ARGV[0] == "test"
+  function = ARGV[1]
 
   function = "sigmoid" if function.nil?
 
@@ -22,7 +23,6 @@ def main
     data.map!(&:to_f)
 
     # To Test
-    test = true
     if test
         weight_array = [0.5280792893951307, 0.2578971742250856, 0.17185775067809468]
         weight_vector = Vector.elements(weight_array)

@@ -18,8 +18,8 @@ require 'net/http'
 # https://image-charts.com/chart?chs=700x190&chd=t:60,40&cht=p3&chl=Hello%7CWorld&chan&chf=ps0-0,lg,45,ffeb3b,0.2,f44336,1|ps0-1,lg,45,8bc34a,0.2,009688,1
 # 
 
-def get_filename
-  $file = "images/" << Time.now.strftime('%Y-%m-%d-%H-%M-%S-') << "image.jpg"
+def get_filename(name)
+  $file = "images/" << Time.now.strftime('%Y-%m-%d-%H-%M-%S-') << "#{name}.jpg"
 end
 
 def create_graph_lxy(xvalues, yvalues)
@@ -52,8 +52,8 @@ def create_graph_lxy(xvalues, yvalues)
 
 end
 
-def create_graph_lx(yvalues)
-  get_filename
+def create_graph_lx(name, yvalues)
+  get_filename(name)
 
   cht = "lc"
   chd = "t:"

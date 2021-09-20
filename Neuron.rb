@@ -1,6 +1,7 @@
 # 
 # A single artificial neuron.
 #
+require 'matrix'
 require 'yaml'
 require 'pry'
 
@@ -13,6 +14,7 @@ class Neuron
                 :transfer_parameter,
                 :iterations,
                 :values,
+                :final,
                 :output
 
   def initialize(data)
@@ -20,6 +22,7 @@ class Neuron
     @name = data[:name]
     @transfer_parameter = transfer_parameter
     @values = []    
+    @final = []
 
     # Assign random weights
     #random_weights
@@ -74,8 +77,9 @@ class Neuron
       value = 1 if rawvalue >= 0
 
       sleep 1
-      @values << value
+      @values << rawvalue
     end
+    @final << value
     @output = value
   end
 
@@ -92,7 +96,7 @@ class Neuron
       training.each_with_index do |element, index|
         if element >= 0 && index == (training.size - 1)
           weight[index] = weight[index] + 0.1
-        else
+        elsif element >= 0
           weight[index] = weight[index] - 0.1
         end
       end
@@ -100,7 +104,7 @@ class Neuron
       training.each_with_index do |element, index|
         if element >= 0 && index == (training.size - 1)
           weight[index] = weight[index] - 0.1
-        else 
+        elsif element >= 0
           weight[index] = weight[index] + 0.1
         end
       end
@@ -123,8 +127,8 @@ class Neuron
     value = 0 if rawvalue < 0
     value = 1 if rawvalue >= 0
 
-    # Adjust the weights if necessary
     puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}"
+    @final << value
 
   end
 
@@ -148,6 +152,7 @@ class Neuron
   def save
     @input_vector = []
     @values = []
+    @final = []
     if !@name.nil?
       $file = Time.now.strftime('%Y-%m-%d-%H-%M-%S-') << @name
     else
