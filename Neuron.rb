@@ -69,7 +69,7 @@ class Neuron
     puts "{@training_vector}, {@weight_vector}, {@target}, {value}, {rawvalue}"
     puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}, #{rawvalue}"
     while (@target - value).abs() != 0
-      puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}, #{rawvalue}"
+      #puts "#{@training_vector}, #{@weight_vector}, #{@target}, #{value}, #{rawvalue}"
       @weight_vector =  adjust_weight(@training_vector, @weight_vector, @target, value)
       rawvalue = inner_product(@training_vector, @weight_vector)
 

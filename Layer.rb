@@ -5,10 +5,14 @@ require 'yaml'
 require 'pry'
 
 class Layer
-  attr_accessor :name, :neurons, :data_file, :mode, :function, :neuron_count
+  attr_accessor :name, :neurons, :data_file, :mode, :function, :neuron_count, :output, :target, :results, :weights
 
   def initialize(data)
     @neurons = []
+    @output = []
+    @target = []
+    @results = []
+    @weights = []
 
     @name = data[:name]
     @data = data[:data_file]
@@ -54,14 +58,20 @@ class Layer
             neuron.train(data)
         end
 
-        print "Target: #{target}\n"
-        print "Results: #{neuron.final}\n"
+        #print "Target: #{target}\n"
+        @target = neuron.target
+        #print "Results: #{neuron.final}\n"
+        @results = neuron.results
 
-        puts neuron.weight_vector
+        #puts neuron.weight_vector
+        @weights = neuron.weight_vector
+        @output << neuron.output
+
         File.open("store/#{neuron.name}", 'a') { |f| f.puts(neuron.weight_vector) }
 
         #create_graph_lx(neuron.name, neuron.values) unless test
-      end
-    end
+      end # neurons.each
+    end # file.each
+
   end
 end

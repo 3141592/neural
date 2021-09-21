@@ -10,16 +10,20 @@ def main
   
   layer1 = Layer.new(
     name: "layer1",
-    data_file: "and.data",
+    data_file: "Autism-Adult-Data.csv",
     mode: "train",
     function: "sigmoid",
     neuron_count: 1,
   )
 
   layer1.add_neuron
+  #layer1.add_neuron
   layer1.train
+  print layer1.output
+  puts layer1.target
+  puts layer1.results
+  puts layer1.weights
 
-  layer1.to_s
 
 end
 
